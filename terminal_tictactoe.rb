@@ -40,7 +40,7 @@ end
 
 puts 'Player one will use an X and go first. Please enter a name for player one.'
 player_one = Player.new(gets)
-puts 'Player one will use an O and go second. Please enter a name for player two.'
+puts 'Player two will use an O and go second. Please enter a name for player two.'
 player_two = Player.new(gets)
 
 puts "
@@ -54,4 +54,3 @@ puts "
   4|5|6
   -+-+-
   7|8|9"
-  

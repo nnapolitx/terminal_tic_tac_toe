@@ -19,10 +19,11 @@ WINCOMBOS = {
 
 # Create the players from a class
 class Player
-  attr_reader :board
+  attr_reader :board, :name, :sym
 
-  def initialize(name)
+  def initialize(name, sym)
     @name = name
+    @sym = sym
     @board = []
   end
 
@@ -44,11 +45,12 @@ class Player
 end
 
 puts 'Player one will use an X and go first. Please enter a name for player one.'
-player_one = Player.new(gets)
+player_one = Player.new(gets.chomp, 'X')
 puts 'Player two will use an O and go second. Please enter a name for player two.'
-player_two = Player.new(gets)
+player_two = Player.new(gets.chomp, 'O')
 
-puts " CURRENT BOARD
+def current_board(gameboard)
+  puts " CURRENT BOARD
   #{gameboard[0]}|#{gameboard[1]}|#{gameboard[2]}
   -+-+-
   #{gameboard[3]}|#{gameboard[4]}|#{gameboard[5]}
@@ -60,8 +62,9 @@ puts " CURRENT BOARD
   4|5|6
   -+-+-
   7|8|9"
+end
 
-def current_turn (one, two)
+def current_turn(one, two)
   if one.board.length > two.board.length
     two
   else
@@ -69,4 +72,19 @@ def current_turn (one, two)
   end
 end
 
-p current_turn(player_one, player_two)
+def input_move(current_player, gameboard, player_one, player_two)
+  current_board(gameboard)
+  puts "#{current_player.name}, please choose an open space."
+
+  current_move = gets.chomp.to_i
+  if current_player.board.include?(current_move)
+    puts 'Space is already taken, please choose an EMPTY space'
+    input_move
+  else
+    current_player.move(current_move)
+    gameboard[current_move + 1] = current_player.sym
+  end
+  input_move(current_turn(player_one, player_two), gameboard, player_one, player_two)
+end
+
+input_move(current_turn(player_one, player_two), gameboard, player_one, player_two)

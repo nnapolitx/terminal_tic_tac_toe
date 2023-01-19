@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 gameboard = [
-  1, 2, 3,
-  4, 5, 6,
-  7, 8, 9
+  ' ', ' ', ' ',
+  ' ', ' ', ' ',
+  ' ', ' ', ' '
 ]
 
 WINCOMBOS = {
@@ -19,22 +19,27 @@ WINCOMBOS = {
 
 # Create the players from a class
 class Player
+  attr_reader :board
+
   def initialize(name)
     @name = name
+    @board = []
   end
 
-  board = []
+  def board_len
+    @board.length
+  end
 
   def display_name
     @name
   end
 
   def move(index)
-    board.push(index)
+    @board.push(index)
   end
 
   def reset_board
-    board.length = 0
+    @board.length = 0
   end
 end
 
@@ -43,14 +48,25 @@ player_one = Player.new(gets)
 puts 'Player two will use an O and go second. Please enter a name for player two.'
 player_two = Player.new(gets)
 
-puts "
+puts " CURRENT BOARD
   #{gameboard[0]}|#{gameboard[1]}|#{gameboard[2]}
   -+-+-
   #{gameboard[3]}|#{gameboard[4]}|#{gameboard[5]}
   -+-+-
   #{gameboard[6]}|#{gameboard[7]}|#{gameboard[8]}\n
+
   1|2|3
   -+-+-
   4|5|6
   -+-+-
   7|8|9"
+
+def current_turn (one, two)
+  if one.board.length > two.board.length
+    two
+  else
+    one
+  end
+end
+
+p current_turn(player_one, player_two)

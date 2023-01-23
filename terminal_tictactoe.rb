@@ -7,14 +7,14 @@ gameboard = [
 ]
 
 WINCOMBOS = {
-  a: [0, 1, 2],
-  b: [3, 4, 5],
-  c: [6, 7, 8],
-  d: [0, 4, 8],
-  e: [2, 4, 6],
-  f: [0, 3, 6],
-  g: [1, 4, 7],
-  h: [2, 5, 8]
+  a: [1, 2, 3],
+  b: [4, 5, 6],
+  c: [7, 8, 9],
+  d: [1, 5, 9],
+  e: [3, 5, 7],
+  f: [1, 4, 7],
+  g: [2, 5, 8],
+  h: [3, 6, 9]
 }
 
 # Create the players from a class
@@ -65,6 +65,15 @@ def current_board(gameboard)
   7|8|9"
 end
 
+def winning_board(gameboard)
+  puts "
+  #{gameboard[0]}|#{gameboard[1]}|#{gameboard[2]}
+  -+-+-
+  #{gameboard[3]}|#{gameboard[4]}|#{gameboard[5]}
+  -+-+-
+  #{gameboard[6]}|#{gameboard[7]}|#{gameboard[8]}\n"
+end
+
 def current_turn(one, two)
   if one.board.length > two.board.length
     two
@@ -73,11 +82,11 @@ def current_turn(one, two)
   end
 end
 
-def validate_player_move(current_move, current_player, gameboard)
-  # check the move to see if valid and pass to player's board
-  if current_player.board.include?(current_move)
+def validate_player_move(current_move, current_player, gameboard, player_one, player_two)
+  # check the move as valid and pass to player's board
+  if player_one.board.include?(current_move) || player_two.board.include?(current_move)
     puts 'Space is already taken, please choose an EMPTY space'
-    input_move
+    input_move(current_turn(player_one, player_two), gameboard, player_one, player_two)
   elsif current_move.positive? && current_move < 10
     current_player.move(current_move)
     gameboard[current_move - 1] = current_player.sym
@@ -86,10 +95,22 @@ def validate_player_move(current_move, current_player, gameboard)
   end
 end
 
+def announce_winner(current_player, gameboard)
+  puts "#{current_player.name} is the winner, please play again!"
+  winning_board(gameboard)
+end
+
 def check_winner(current_player, gameboard, player_one, player_two)
   # check for win or tie
-  if gameboard.length >= 9
-    puts "#{current_board(gameboard)} There was a tie, please play again"
+  if current_player.board.length > 2
+    WINCOMBOS.each_value do |arr|
+      if (arr & current_player.board) == arr
+        return announce_winner(current_player,gameboard)
+      end
+    end
+  elsif player_one.board.length > 4
+    puts 'There was a tie, please play again'
+    winning_board(gameboard)
   else
     input_move(current_turn(player_one, player_two), gameboard, player_one, player_two)
   end
@@ -105,7 +126,7 @@ def input_move(current_player, gameboard, player_one, player_two)
     input_move(current_turn(player_one, player_two), gameboard, player_one, player_two)
   else
     current_move = current_move.to_i
-    validate_player_move(current_move, current_player, gameboard)
+    validate_player_move(current_move, current_player, gameboard, player_one, player_two)
     check_winner(current_player, gameboard, player_one, player_two)
   end
 end
@@ -114,7 +135,7 @@ input_move(current_turn(player_one, player_two), gameboard, player_one, player_t
 
 # TODO
 # Account for error inputs such as letters or numbers >9||<0
-# Call TIE if gameboard.length>=9
+# Call TIE if gameboard.filter([/\d/]).length>=9
 # Add a check winner module
 # add a Play Again
 # Refactor and namespace to make it easier to call a new game

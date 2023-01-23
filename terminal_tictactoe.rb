@@ -57,6 +57,7 @@ def current_board(gameboard)
   -+-+-
   #{gameboard[6]}|#{gameboard[7]}|#{gameboard[8]}\n
 
+  CHOOSE A SPACE
   1|2|3
   -+-+-
   4|5|6

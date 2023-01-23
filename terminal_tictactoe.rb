@@ -83,7 +83,7 @@ def input_move(current_player, gameboard, player_one, player_two)
     input_move
   else
     current_player.move(current_move)
-    gameboard[current_move + 1] = current_player.sym
+    gameboard[current_move-1] = current_player.sym
   end
   input_move(current_turn(player_one, player_two), gameboard, player_one, player_two)
 end

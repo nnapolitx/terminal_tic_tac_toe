@@ -134,8 +134,5 @@ end
 input_move(current_turn(player_one, player_two), gameboard, player_one, player_two)
 
 # TODO
-# Account for error inputs such as letters or numbers >9||<0
-# Call TIE if gameboard.filter([/\d/]).length>=9
-# Add a check winner module
 # add a Play Again
 # Refactor and namespace to make it easier to call a new game

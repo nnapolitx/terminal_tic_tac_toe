@@ -121,14 +121,6 @@ def reset_all_boards(gameboard, player_one, player_two)
   input_move(current_turn(player_one, player_two), gameboard, player_one, player_two)
 end
 
-def play_again(gameboard, player_one, player_two)
-  puts 'Would you like to play again? If yes enter Y'
-  x = gets.chomp.upcase
-  if x == 'Y'
-    reset_all_boards(gameboard, player_one, player_two)
-  end
-end
-
 def check_winner(current_player, gameboard, player_one, player_two)
   # check for win or tie
   check_for_win(current_player, gameboard, player_one, player_two)

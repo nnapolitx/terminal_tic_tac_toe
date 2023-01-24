@@ -27,20 +27,12 @@ class Player
     @board = []
   end
 
-  def board_len
-    @board.length
-  end
-
-  def display_name
-    @name
-  end
-
   def move(index)
     @board.push(index)
   end
 
   def reset_board
-    @board.length = 0
+    @board = []
   end
 end
 
@@ -51,27 +43,27 @@ player_two = Player.new(gets.chomp, 'O')
 
 def current_board(gameboard)
   puts " CURRENT BOARD
-  #{gameboard[0]}|#{gameboard[1]}|#{gameboard[2]}
-  -+-+-
-  #{gameboard[3]}|#{gameboard[4]}|#{gameboard[5]}
-  -+-+-
-  #{gameboard[6]}|#{gameboard[7]}|#{gameboard[8]}\n
+  #{gameboard[0]} | #{gameboard[1]} | #{gameboard[2]}
+  --+---+--
+  #{gameboard[3]} | #{gameboard[4]} | #{gameboard[5]}
+  --+---+--
+  #{gameboard[6]} | #{gameboard[7]} | #{gameboard[8]}\n
 
   CHOOSE A SPACE
-  1|2|3
-  -+-+-
-  4|5|6
-  -+-+-
-  7|8|9"
+  1 | 2 | 3
+  --+---+--
+  4 | 5 | 6
+  --+---+--
+  7 | 8 | 9"
 end
 
 def winning_board(gameboard)
   puts "
-  #{gameboard[0]}|#{gameboard[1]}|#{gameboard[2]}
-  -+-+-
-  #{gameboard[3]}|#{gameboard[4]}|#{gameboard[5]}
-  -+-+-
-  #{gameboard[6]}|#{gameboard[7]}|#{gameboard[8]}\n"
+  #{gameboard[0]} | #{gameboard[1]} | #{gameboard[2]}
+  --+---+--
+  #{gameboard[3]} | #{gameboard[4]} | #{gameboard[5]}
+  --+---+--
+  #{gameboard[6]} | #{gameboard[7]} | #{gameboard[8]}\n"
 end
 
 def current_turn(one, two)
@@ -90,27 +82,48 @@ def validate_player_move(current_move, current_player, gameboard, player_one, pl
   elsif current_move.positive? && current_move < 10
     current_player.move(current_move)
     gameboard[current_move - 1] = current_player.sym
+    check_winner(current_player, gameboard, player_one, player_two)
   else
     puts "#{current_move} is not a valid move. Please enter a number 1 through 9 to choose an empty space"
   end
 end
 
-def announce_winner(current_player, gameboard)
-  puts "#{current_player.name} is the winner, please play again!"
+def check_for_win(current_player, gameboard, player_one, player_two)
+  WINCOMBOS.each_value do |arr|
+    if (arr & current_player.board) == arr
+      return announce_winner(current_player, gameboard, player_one, player_two)
+    end
+  end
+end
+
+def announce_winner(current_player, gameboard, player_one, player_two)
+  puts "#{current_player.name} is the winner!"
   winning_board(gameboard)
+  play_again(gameboard, player_one, player_two)
+end
+
+def reset_all_boards(gameboard, player_one, player_two)
+  gameboard = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+  player_one.reset_board
+  player_two.reset_board
+  input_move(current_turn(player_one, player_two), gameboard, player_one, player_two)
+end
+
+def play_again(gameboard, player_one, player_two)
+  puts 'Would you like to play again? If yes enter Y'
+  x = gets.chomp.upcase
+  if x == 'Y'
+    reset_all_boards(gameboard, player_one, player_two)
+  end
 end
 
 def check_winner(current_player, gameboard, player_one, player_two)
   # check for win or tie
-  if current_player.board.length > 2
-    WINCOMBOS.each_value do |arr|
-      if (arr & current_player.board) == arr
-        return announce_winner(current_player,gameboard)
-      end
-    end
-  elsif player_one.board.length > 4
-    puts 'There was a tie, please play again'
+  check_for_win(current_player, gameboard, player_one, player_two)
+  if player_one.board.length > 4
+    puts 'There was a tie.'
     winning_board(gameboard)
+    play_again(gameboard, player_one, player_two)
   else
     input_move(current_turn(player_one, player_two), gameboard, player_one, player_two)
   end
@@ -119,7 +132,6 @@ end
 def input_move(current_player, gameboard, player_one, player_two)
   current_board(gameboard)
   puts "#{current_player.name}, please choose an open space."
-
   current_move = gets.chomp
   if current_move.match(/[a-zA-Z]/)
     puts "#{current_move} is not valid. Please enter a number 1-10"
@@ -127,12 +139,7 @@ def input_move(current_player, gameboard, player_one, player_two)
   else
     current_move = current_move.to_i
     validate_player_move(current_move, current_player, gameboard, player_one, player_two)
-    check_winner(current_player, gameboard, player_one, player_two)
   end
 end
 
 input_move(current_turn(player_one, player_two), gameboard, player_one, player_two)
-
-# TODO
-# add a Play Again
-# Refactor and namespace to make it easier to call a new game

@@ -99,11 +99,23 @@ end
 def announce_winner(current_player, gameboard, player_one, player_two)
   puts "#{current_player.name} is the winner!"
   winning_board(gameboard)
-  play_again(gameboard, player_one, player_two)
+  puts 'Would you like to play again? Y or N'
+  x = gets.chomp.upcase
+  if x == 'Y'
+    reset_all_boards(gameboard, player_one, player_two)
+  else
+    winning_board(gameboard)
+    exit!
+  end
+end
+
+def reset(arr)
+  arr.map! { |val| val = ' ' }
+  arr
 end
 
 def reset_all_boards(gameboard, player_one, player_two)
-  gameboard = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+  reset(gameboard)
   player_one.reset_board
   player_two.reset_board
   input_move(current_turn(player_one, player_two), gameboard, player_one, player_two)
